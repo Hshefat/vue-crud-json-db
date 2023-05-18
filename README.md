@@ -1,4 +1,4 @@
-# office-project
+# vue-crud-json-db
 
 ## Project setup
 ```
