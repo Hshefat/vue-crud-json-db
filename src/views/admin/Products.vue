@@ -1,0 +1,61 @@
+<template>
+  <div style="text-align: right">
+    <router-link :to="{ name: 'Create-Products' }" class="btn"
+      >Add Product</router-link
+    >
+  </div>
+  <table style="text-align: justify">
+    <thead>
+      <tr>
+        <th>Sl</th>
+        <th style="text-align: center">Description</th>
+        <th>Image</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr v-for="product in products" :key="product.id">
+        <td>{{ product.id }}</td>
+        <td>{{ product.title }}</td>
+        <td><img :src="product.image" :alt="product.title" width="90" /></td>
+        <td>
+          <router-link
+            :to="{ name: 'Edit-Products', params: { id: product.id } }"
+            class="btn"
+            >Edit</router-link
+          >
+          <button @click="del(product.id)" class="btn btn-del">Delete</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</template>
+
+<script>
+import { onMounted, ref } from "vue";
+export default {
+  name: "Products-Page",
+  setup() {
+    const products = ref([]);
+    onMounted(async () => {
+      const res = await fetch("http://localhost:3000/products");
+      products.value = await res.json();
+    });
+
+    const del = async (id) => {
+      if (!window.confirm("You sure?")) {
+        return;
+      }
+      await fetch(`http://localhost:3000/products/${id}`, {
+        method: "DELETE",
+      });
+
+      products.value = products.value.filter((p) => p.id !== id);
+    };
+
+    return { products, del };
+  },
+};
+</script>
+
+<style></style>
